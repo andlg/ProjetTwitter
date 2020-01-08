@@ -155,13 +155,13 @@ public class BaseDeTweets {
     
     //Affichage des tweets entre 2 dates 
     public String lire2(LocalDateTime d1, LocalDateTime d2) {
-        String sortie = "Liste : \n";
+        String sortie = /*"Liste : \n"*/"\n";
         boolean sup=false;
 	Iterator<Tweet> it =liste.iterator();
 	while(it.hasNext() & sup==false) {
             Tweet t=it.next();
             if (t.get_date().isAfter(d1) & t.get_date().isBefore(d2)) {
-		String s=t.toString();
+		String s=t.toStringPartiel();
                 sortie=sortie+s+"\n";
             }
             if(t.get_date().isAfter(d2)) {

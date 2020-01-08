@@ -26,6 +26,13 @@ public class Tweet implements Serializable{
 		String string_utf = new String(string_iso.getBytes(),Charset.forName("UTF-8"));
 		return string_utf;
 	}
+        
+        public String toStringPartiel() {
+            
+		String string_iso = date+"\n "+id_user+" a tweeté :  \n"+mess+" \n Retweet de: "+id_uretweet+"\n -------------";
+		String string_utf = new String(string_iso.getBytes(),Charset.forName("UTF-8"));
+		return string_utf;
+	}
 	
 	public LocalDateTime get_date() {
 		return date;

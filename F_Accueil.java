@@ -31,6 +31,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -71,6 +72,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
@@ -242,7 +244,9 @@ public class F_Accueil extends Application {
                             tab.ajoute(t);
                             // System.out.println("zz");
                         } catch (DateTimeParseException e) {
-                            e.printStackTrace();
+                          //  e.printStackTrace();
+                            e.getMessage();
+                            System.out.println("Erreur conversion date");
                         }
                         //28/12
                     }
@@ -260,7 +264,8 @@ public class F_Accueil extends Application {
             alert.setHeaderText("Chargement des données terminé");
             alert.showAndWait();
         } catch (Exception e) {
-            e.printStackTrace();
+          //  e.printStackTrace();
+            e.getMessage();
         }
         System.out.println("size: " + tab.get_size());
         System.out.println(tab.lire2(5));
@@ -281,7 +286,9 @@ public class F_Accueil extends Application {
          y.setLabel("Nombre de tweets");
         
         //Graphique
-        BarChart lc = new BarChart<String, Number>(x, y);
+        BarChart bchart = new BarChart<String, Number>(x, y);
+        bchart.setLegendVisible(false);
+         bchart.setTitle("Nombre de tweets sur la période");
        /*  XYChart.Series serietest = new XYChart.Series();
                 serietest.setName("Nombre de tweets");
        
@@ -293,14 +300,16 @@ public class F_Accueil extends Application {
         CategoryAxis x2 = new CategoryAxis();
         //Ordonee
         NumberAxis y2 = new NumberAxis();
-         y.setLabel("Nombre de tweets");
+         y2.setLabel("Nombre de tweets");
        
-         BarChart lc2 = new BarChart<String, Number>(x2, y2);
+         BarChart bchart2 = new BarChart<String, Number>(x2, y2);
+         bchart2.setLegendVisible(false);
+         bchart2.setTitle("Nombre de tweets par heure");
         // lc.getData().add(new XYChart.Data("2019-06-21", 23));;
 
         String st = "Nombre moyen de tweets par jour sur la période : ";
         Label l = new Label(st);
-        BorderPane bp = new BorderPane();
+        GridPane bp = new GridPane();
         VBox vbox = new VBox();
         vbox.setSpacing(15);
         //Calendrier depart
@@ -343,13 +352,13 @@ public class F_Accueil extends Application {
                     tot = tot + hmap.get(mapentry.getKey());
                     xlabels.add(mapentry.getKey().toString());
                 }
-                lc.getData().clear();
+                bchart.getData().clear();
                 
         x.setCategories(xlabels);
        
         
 //Ajout de la serie au graphique 
-                lc.getData().add(series);
+                bchart.getData().add(series);
                 
 
                 //Affichage du nombre moyen de tweets par jour sur la periode 
@@ -379,30 +388,48 @@ public class F_Accueil extends Application {
                     //Somme des tweets
                     tot = tot + hmap.get(mapentry.getKey());
                 }
-                lc2.getData().clear();
+                bchart2.getData().clear();
                 //Ajout de la serie au graphique 
-                lc2.getData().add(series);
+                bchart2.getData().add(series);
 
                 //Affichage du nombre moyen de tweets par jour sur la periode 
                 String st = "Nombre moyen de tweets par jour sur la période : " + Integer.toString(tot / 24);
                 l.setText(st);
-                lc2.setTitle(d3.getValue().toString());
-                lc2.setStyle("-fx-bar-fill: red");
+               
+                bchart2.setStyle("-fx-bar-fill: red");
             }
         });
 
         vbox.setAlignment(Pos.CENTER);
-        vbox.getChildren().addAll(d1, d2, but, d3, but2);
+      /*  vbox.getChildren().addAll(d1, d2, but, d3, but2);
         bp.setLeft(vbox);
-
+*/
         VBox vbox2 = new VBox();
         vbox2.setSpacing(15);
         vbox2.setAlignment(Pos.CENTER);
-        vbox2.getChildren().addAll(lc, l,lc2);
-        bp.setCenter(vbox2);
+     //   vbox2.getChildren().addAll(bchart, l,bchart2);
+      //  bp.setCenter(vbox2);
+      
+      VBox vbox3 = new VBox();
+        vbox3.setSpacing(15);
+        vbox3.setAlignment(Pos.CENTER);
         
         MenuBar menu=menuB(StageNb);
-        bp.setTop(menu);
+    //    bp.setTop(menu);
+        
+    vbox.getChildren().addAll(d1, d2, but);
+    vbox2.getChildren().addAll( d3, but2);
+     vbox3.getChildren().addAll( bchart, l);
+        bp.setConstraints(menu,0,0,2,1);
+        bp.getChildren().add(menu);
+        bp.setConstraints(vbox,0,1);
+        bp.getChildren().add(vbox);
+        bp.setConstraints(vbox3,1,1);
+        bp.getChildren().add(vbox3);
+        bp.setConstraints(vbox2,0,2);
+        bp.getChildren().add(vbox2);
+        bp.setConstraints(bchart2,1,2);
+        bp.getChildren().add(bchart2);
 
         StackPane root = new StackPane();
         root.getChildren().addAll(bp);
@@ -419,7 +446,7 @@ public class F_Accueil extends Application {
 
 
     public void lecture() {
-
+ TextFlow txtflow=new TextFlow();   
         Text tf = new Text();
         Stage StageAff = new Stage();
         StageAff.setTitle("Aff");
@@ -430,7 +457,7 @@ public class F_Accueil extends Application {
         scrollPane.setHbarPolicy(ScrollBarPolicy.ALWAYS);
 
         VBox vbox = new VBox();
-        vbox.setSpacing(15);
+        vbox.setSpacing(25);
 
         Button baff = new Button("Afficher tout");
         baff.setOnAction((ActionEvent t) -> {
@@ -474,14 +501,15 @@ public class F_Accueil extends Application {
         Label lheures1=new Label("h");
         Spinner<Integer> spinm = new Spinner<Integer>(0, 59, 0);
         spinm.setPrefWidth(60);
+        Label lheures2=new Label("à");
         Spinner<Integer> spinh2 = new Spinner<Integer>(0, 23, 0);
         spinh2.setPrefWidth(60);
-        Label lheures2=new Label("h");
+        Label lheures3=new Label("h");
         Spinner<Integer> spinm2 = new Spinner<Integer>(0, 59, 0);
         spinm2.setPrefWidth(60);
         Button but2 = new Button("Afficher heures");
         but2.setOnAction((ActionEvent t) -> {
-            
+        
             DecimalFormat nf = new DecimalFormat("00");
 
             String j = d2.getValue().toString();
@@ -499,23 +527,39 @@ public class F_Accueil extends Application {
                 //tab.lire(date1,date2);
                 String resd1d2 = tab.lire2(date1, date2);
                 tf.setText(resd1d2);
+                
+                String[] decoup = resd1d2.split("\n"); 
+                Color[] colors = {Color.BLACK, Color.BLUE, Color.RED, Color.GREEN, Color.BROWN}; 
+                int stl=0;
+                for (String ligne : decoup) { 
+                    if(stl==5){
+                        stl=0;
+                    }
+                    
+                    Text text = new Text(ligne+"\n"); 
+                    text.setFill(colors[stl]);
+                    txtflow.getChildren().add(text); 
+                    stl=stl+1;
+                }
+                
             } catch (DateTimeParseException e) {
                 e.printStackTrace();
             }
         });
 
         MenuBar menu=menuB(StageAff);
-        
+        vbox.setStyle("-fx-background-color: #B0C4DE;");
         hbox.getChildren().addAll(baff, d1/*,d2*/, but);
-        hbox2.getChildren().addAll(d2, spinh,lheures1, spinm, spinh2,lheures2, spinm2, but2);
+        hbox2.getChildren().addAll(d2, spinh,lheures1, spinm,lheures2, spinh2,lheures3, spinm2, but2);
         Label lperiode=new Label("Lecture des tweets sur une plage horaire d'une journée: ");
+        
         vbox.getChildren().addAll(menu,hbox,lperiode, hbox2);
         bp.setTop(vbox);
 
-        bp.setCenter(tf);
+        bp.setCenter(txtflow);
 
         StackPane root = new StackPane();
-        Scene scene = new Scene(scrollPane, 800, 400);
+        Scene scene = new Scene(scrollPane, 800, 500);
         root.getChildren().addAll(bp);
         StageAff.setScene(scene);
         StageAff.sizeToScene();
@@ -560,8 +604,9 @@ public class F_Accueil extends Application {
         d2.setValue(tab.date(1));
 
         //Affichage du TOP 5
-        String sttop = "TOP 5 \n  ";
-        Text ttop = new Text(sttop+" -- \n -- \n -- \n -- \n --");
+        String sttop = "";
+        Label ltop5 = new Label("TOP 5 \n  ");
+        Text ttop = new Text(" -- \n -- \n -- \n -- \n --");
         ttop.setTextAlignment(TextAlignment.CENTER);
         
         
@@ -686,7 +731,7 @@ public class F_Accueil extends Application {
 
         
         vbox.setAlignment(Pos.CENTER);
-        vbox.getChildren().addAll(ltop, d1, d2, but,ltop2, d3, but2, ttop);
+        vbox.getChildren().addAll(ltop, d1, d2, but,ltop2, d3, but2, ltop5,ttop);
         vbox.setStyle("-fx-background-color: #B0C4DE;");
         bp.setLeft(vbox);
 
@@ -699,6 +744,7 @@ public class F_Accueil extends Application {
         HBox hbox2=new HBox();
         hbox2.setSpacing(15);
         hbox2.getChildren().addAll(d4,but4);
+        hbox2.setAlignment(Pos.CENTER);
         vboxtop.setSpacing(15);
         vboxtop.getChildren().addAll(menu);
         bp.setTop(vboxtop);
