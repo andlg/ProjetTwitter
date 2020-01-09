@@ -255,7 +255,7 @@ public class F_Accueil extends Application {
                     }
                 } catch (Exception e) {
                     //Certaines lignes ne contiennent pas 5 elements et ne sont donc pas traitees
-                    System.out.println("Tweets non utilisables");
+                    System.out.println("Tweet non utilisable");
                 }
                 ligne = br.readLine();
                 //Tant qu'il y a une ligne a lire dans le fichier 
@@ -350,7 +350,10 @@ public class F_Accueil extends Application {
                 bchart.getData().add(series);
 
                 //Affichage du nombre moyen de tweets par jour sur la periode 
-                String st = "Nombre moyen de tweets par jour sur la période : " + Integer.toString(tot / hmap.size());
+                String st = "Nombre moyen de tweets par jour sur la période : ";
+                if(hmap.size()!=0){
+                    st=st+ Integer.toString(tot / hmap.size());
+                }
                 l.setText(st);
             }
         });
@@ -435,7 +438,9 @@ public class F_Accueil extends Application {
 
         VBox vbox = new VBox();
         vbox.setSpacing(25);
-
+        
+        //Tableau de couleurs pour affichage differencie des elements du tweets
+         Color[] colors = {Color.BLACK, Color.TEAL, Color.NAVY, Color.BLACK, Color.BLUE}; 
         Button baff = new Button("Afficher tout");
         baff.setOnAction((ActionEvent t) -> {
             Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -447,8 +452,21 @@ public class F_Accueil extends Application {
                     + " Etes-vous sûrs de vouloir tout afficher ?");
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
+                //On reinitialise l'affichage
+                txtflow.getChildren().clear();
                 String resall = tab.lire();
                 tf.setText(resall);
+                String[] decoupe = resall.split("\n");
+                int stl = 0;
+                 for (String ligne : decoupe) {
+                    if (stl == 5) {
+                        stl = 0;
+                    }
+                    Text text = new Text(ligne + "\n");
+                    text.setFill(colors[stl]);
+                    txtflow.getChildren().add(text);
+                    stl = stl + 1;
+                }
             }
         });
 
@@ -459,8 +477,21 @@ public class F_Accueil extends Application {
         Button but = new Button("Afficher");
         //Affichage des tweets d'un certain jour 
         but.setOnAction((ActionEvent t) -> {
+            //On reinitialise l'affichage
+            txtflow.getChildren().clear();
             String resd = tab.lire(d1.getValue());
             tf.setText(resd);
+            String[] decoupe = resd.split("\n");
+            int stl = 0;
+            for (String ligne : decoupe) {
+                if (stl == 5) {
+                    stl = 0;
+                }
+                Text text = new Text(ligne + "\n");
+                text.setFill(colors[stl]);
+                txtflow.getChildren().add(text);
+                stl = stl + 1;
+            }
         });
 
         HBox hbox = new HBox();
@@ -484,14 +515,14 @@ public class F_Accueil extends Application {
         spinm2.setPrefWidth(60);
         Button but2 = new Button("Afficher");
         but2.setOnAction((ActionEvent t) -> {
+            //On reinitialise l'affichage
+            txtflow.getChildren().clear();
             DecimalFormat df = new DecimalFormat("00");
             String j = d2.getValue().toString();
             String s;
             s = j + " " + df.format(spinh.getValue()) + ":" + df.format(spinm.getValue());
-            System.out.println(s);
             String s2;
             s2 = j + " " + df.format(spinh2.getValue()) + ":" + df.format(spinm2.getValue());
-            System.out.println(s);
             DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
             try {
                 LocalDateTime date1 = LocalDateTime.parse(s, formatter2);
@@ -499,7 +530,7 @@ public class F_Accueil extends Application {
                 String resd1d2 = tab.lire(date1, date2);
                 tf.setText(resd1d2);
                 String[] decoupe = resd1d2.split("\n");
-                Color[] colors = {Color.BLACK, Color.TEAL, Color.NAVY, Color.BLACK, Color.BLUE}; int stl = 0;
+                int stl = 0;
                 for (String ligne : decoupe) {
                     if (stl == 5) {
                         stl = 0;
@@ -625,7 +656,7 @@ public class F_Accueil extends Application {
                 bchart.getData().add(series);
 
                 //Affichage du nombre moyen de tweets par jour sur la periode 
-                String st = "Nombre moyen de retweets par jour sur la periode : " + Integer.toString(tot / tmap.size());
+                String st = "Nombre moyen de retweets par jour sur la periode : "+ Integer.toString(tot / tmap.size());
                 l.setText(st);
             }
         });
