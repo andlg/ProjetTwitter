@@ -47,26 +47,25 @@ public class BaseDeTweets {
 
     //Affichage du jeu de donnees entier 
     public String lire() {
-        String sortie = "Liste : \n";
+        String sortie = "\n";
         Iterator<Tweet> it = liste.iterator();
         while (it.hasNext()) {
             Tweet t = it.next();
-            String s = t.toString();
+            String s = t.toStringPartiel();
             sortie = sortie + s + "\n";
         }
-        sortie = sortie + "dernier" + liste.get(liste.size() - 1);
         return sortie;
     }
     
     //Affichage des tweets d'un jour donne
     public String lire(LocalDate d) {
-        String sortie = "Liste : \n";
+        String sortie = "\n";
         boolean sup = false;
         Iterator<Tweet> it = liste.iterator();
         while (it.hasNext() & sup == false) {
             Tweet t = it.next();
             if (t.getDate().toLocalDate().equals(d)) {
-                String s = t.toString();
+                String s = t.toStringPartiel();
                 sortie = sortie + s + "\n";
             }
             if (t.getDate().toLocalDate().isAfter(d)) {
@@ -178,7 +177,7 @@ public class BaseDeTweets {
         String lignetop;
         while (it2.hasNext()) {
             lignetop = it2.next().toString();
-            sortie = sortie + lignetop + "\n";
+            sortie = sortie + lignetop + "\n\n";
         }
         return sortie;
     }
